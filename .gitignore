@@ -4,3 +4,5 @@ WebContent/build.txt
 war/
 build/
 bin/
+/.idea/workspace.xml
+
