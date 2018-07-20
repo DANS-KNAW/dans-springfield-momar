@@ -178,7 +178,8 @@ public class TranscoderWorker implements MargeObserver {
 			
 			String[] cmdArray = new String[] {batchFilesPath+File.separator+jobFinished+batchFilesExtension, filePath};
 			LOG.debug("About to run "+batchFilesPath+File.separator+jobFinished+batchFilesExtension+" "+filePath);
-			CommandRunner.run(cmdArray);
+			String result = CommandRunner.run(cmdArray);
+			LOG.debug("Output of command: START>>>" + result + "<<<END");
 		}
 	}
 }

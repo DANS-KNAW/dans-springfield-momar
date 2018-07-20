@@ -1,5 +1,22 @@
 package com.noterik.springfield.momar.homer;
 
+import com.noterik.springfield.momar.MomarServer;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.DailyRollingFileAppender;
+import org.apache.log4j.Layout;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.xml.DOMConfigurator;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.Node;
+import org.springfield.mojo.interfaces.ServiceInterface;
+import org.springfield.mojo.interfaces.ServiceManager;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,13 +30,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
-
-import org.apache.log4j.*;
-import org.dom4j.*;
-import org.springfield.mojo.interfaces.ServiceInterface;
-import org.springfield.mojo.interfaces.ServiceManager;
-
-import com.noterik.springfield.momar.*;
 
 public class LazyHomer implements MargeObserver {	
 	private static Logger LOG = Logger.getLogger(LazyHomer.class);
@@ -403,41 +413,50 @@ public class LazyHomer implements MargeObserver {
 	public static String getRootPath() {
 		return rootPath;
 	}
-	
+
 	/**
 	 * Initializes logger
 	 */
-    private void initLogger() {    	 
-    	System.out.println("Initializing logging.");
-    	
-    	// get logging path
-    	String logPath = LazyHomer.getRootPath().substring(0,LazyHomer.getRootPath().indexOf("webapps"));
-		logPath += "logs/momar/momar.log";	
-		
-		try {
-			// default layout
-			Layout layout = new PatternLayout("%-5p: %d{yyyy-MM-dd HH:mm:ss} %c %x - %m%n");
-			
-			// rolling file appender
-			DailyRollingFileAppender appender1 = new DailyRollingFileAppender(layout,logPath,"'.'yyyy-MM-dd");
-			BasicConfigurator.configure(appender1);
-			
-			// console appender 
-			ConsoleAppender appender2 = new ConsoleAppender(layout);
-			BasicConfigurator.configure(appender2);
+	private void initLogger() {
+		System.out.println("Initializing logging.");
+
+		// get logging path
+		String logPath = LazyHomer.getRootPath()
+				.substring(0, LazyHomer.getRootPath().indexOf("webapps"));
+		logPath += "logs/momar/momar.log";
+
+		File xmlConfig = new File("/springfield/momar/log4j.xml");
+		if (xmlConfig.exists()) {
+			System.out.println("Uter: reading logging config from XML file at " + xmlConfig);
+			DOMConfigurator.configure(xmlConfig.getAbsolutePath());
+			LOG.info("Logging configured from file: " + xmlConfig);
 		}
-		catch(IOException e) {
-			System.out.println("MomarServer got an exception while initializing the logger.");
-			e.printStackTrace();
+		else {
+			try {
+				// default layout
+				Layout layout = new PatternLayout("%-5p: %d{yyyy-MM-dd HH:mm:ss} %c %x - %m%n");
+
+				// rolling file appender
+				DailyRollingFileAppender appender1 = new DailyRollingFileAppender(layout, logPath,
+						"'.'yyyy-MM-dd");
+				BasicConfigurator.configure(appender1);
+
+				// console appender
+				ConsoleAppender appender2 = new ConsoleAppender(layout);
+				BasicConfigurator.configure(appender2);
+			}
+			catch (IOException e) {
+				System.out.println("MomarServer got an exception while initializing the logger.");
+				e.printStackTrace();
+			}
+
+			Level logLevel = Level.INFO;
+			Logger.getRootLogger().setLevel(Level.OFF);
+			Logger.getLogger(PACKAGE_ROOT).setLevel(logLevel);
+			LOG.info("logging level: " + logLevel);
 		}
-		
-		Level logLevel = Level.INFO;
-		Logger.getRootLogger().setLevel(Level.OFF);
-		Logger.getLogger(PACKAGE_ROOT).setLevel(logLevel);
-		LOG.info("logging level: " + logLevel);
-		
 		LOG.info("Initializing logging done.");
-    }
+	}
     
     private static void setLogLevel(String level) {
 		Level logLevel = Level.INFO;
