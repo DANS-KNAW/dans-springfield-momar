@@ -420,11 +420,6 @@ public class LazyHomer implements MargeObserver {
 	private void initLogger() {
 		System.out.println("Initializing logging.");
 
-		// get logging path
-		String logPath = LazyHomer.getRootPath()
-				.substring(0, LazyHomer.getRootPath().indexOf("webapps"));
-		logPath += "logs/momar/momar.log";
-
 		File xmlConfig = new File("/springfield/momar/log4j.xml");
 		if (xmlConfig.exists()) {
 			System.out.println("Uter: reading logging config from XML file at " + xmlConfig);
@@ -432,49 +427,28 @@ public class LazyHomer implements MargeObserver {
 			LOG.info("Logging configured from file: " + xmlConfig);
 		}
 		else {
-			try {
-				// default layout
-				Layout layout = new PatternLayout("%-5p: %d{yyyy-MM-dd HH:mm:ss} %c %x - %m%n");
-
-				// rolling file appender
-				DailyRollingFileAppender appender1 = new DailyRollingFileAppender(layout, logPath,
-						"'.'yyyy-MM-dd");
-				BasicConfigurator.configure(appender1);
-
-				// console appender
-				ConsoleAppender appender2 = new ConsoleAppender(layout);
-				BasicConfigurator.configure(appender2);
-			}
-			catch (IOException e) {
-				System.out.println("MomarServer got an exception while initializing the logger.");
-				e.printStackTrace();
-			}
-
-			Level logLevel = Level.INFO;
-			Logger.getRootLogger().setLevel(Level.OFF);
-			Logger.getLogger(PACKAGE_ROOT).setLevel(logLevel);
-			LOG.info("logging level: " + logLevel);
+			System.out.println("Could not find log config at " + xmlConfig);
 		}
 		LOG.info("Initializing logging done.");
 	}
     
     private static void setLogLevel(String level) {
-		Level logLevel = Level.INFO;
-		Level oldlevel = Logger.getLogger(PACKAGE_ROOT).getLevel();
-		switch (loglevels.valueOf(level)) {
-			case all : logLevel = Level.ALL;break;
-			case info : logLevel = Level.INFO;break;
-			case warn : logLevel = Level.WARN;break;
-			case debug : logLevel = Level.DEBUG;break;
-			case trace : logLevel = Level.TRACE;break;
-			case error: logLevel = Level.ERROR;break;
-			case fatal: logLevel = Level.FATAL;break;
-			case off: logLevel = Level.OFF;break;
-		}
-		if (logLevel.toInt()!=oldlevel.toInt()) {
-			Logger.getLogger(PACKAGE_ROOT).setLevel(logLevel);
-			LOG.info("logging level: " + logLevel);
-		}
+//		Level logLevel = Level.INFO;
+//		Level oldlevel = Logger.getLogger(PACKAGE_ROOT).getLevel();
+//		switch (loglevels.valueOf(level)) {
+//			case all : logLevel = Level.ALL;break;
+//			case info : logLevel = Level.INFO;break;
+//			case warn : logLevel = Level.WARN;break;
+//			case debug : logLevel = Level.DEBUG;break;
+//			case trace : logLevel = Level.TRACE;break;
+//			case error: logLevel = Level.ERROR;break;
+//			case fatal: logLevel = Level.FATAL;break;
+//			case off: logLevel = Level.OFF;break;
+//		}
+//		if (logLevel.toInt()!=oldlevel.toInt()) {
+//			Logger.getLogger(PACKAGE_ROOT).setLevel(logLevel);
+//			LOG.info("logging level: " + logLevel);
+//		}
 	}
 	
 	public static MountProperties getMountProperties(String name) {
