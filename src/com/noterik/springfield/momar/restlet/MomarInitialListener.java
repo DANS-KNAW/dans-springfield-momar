@@ -37,7 +37,7 @@ import com.noterik.springfield.momar.homer.LazyHomer;
 public class MomarInitialListener implements ServletContextListener {
 	
 	public void contextInitialized(ServletContextEvent event) {
-		System.out.println("Momar: context created");
+		System.out.println("MOMAR: context created");
 		
 		ServletContext servletContext = event.getServletContext();
 		
@@ -50,6 +50,6 @@ public class MomarInitialListener implements ServletContextListener {
 		//destroy LazyHomer
 		LazyHomer.destroy();		
 		
-		System.out.println("Momar: context destroyed");
+		System.out.println("MOMAR: context destroyed");
 	}
 }

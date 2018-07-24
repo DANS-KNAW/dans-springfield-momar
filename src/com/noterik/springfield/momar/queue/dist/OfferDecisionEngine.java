@@ -107,7 +107,7 @@ public class OfferDecisionEngine implements DecisionEngine {
 				}
 			}
 		}
-		if (!winner.equals("unknown")) System.out.println("Winning job offer by "+winner+" with score="+maxscore);
+		if (!winner.equals("unknown")) System.out.println("MOMAR: Winning job offer by "+winner+" with score="+maxscore);
 		return winner;
 	}
 	

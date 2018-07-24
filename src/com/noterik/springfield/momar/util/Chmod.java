@@ -37,7 +37,7 @@ public class Chmod {
 		Integer retVal = -1;
 		Process proc = null;
 		try {
-			System.out.println("Command to execute: chmod " + octa + " " + path);
+			System.out.println("MOMAR: Command to execute: chmod " + octa + " " + path);
 			proc = Runtime.getRuntime().exec("chmod " + octa + " " + path);
 			
 	        BufferedReader br = null; 
@@ -49,7 +49,7 @@ public class Chmod {
 	            }
             }
             catch (Exception e) {
-            	System.out.println("Error during reading inputStream");
+            	System.out.println("MOMAR: Error during reading inputStream");
             }
             finally { 
             	if (br != null)
@@ -91,11 +91,11 @@ public class Chmod {
 		System.out.println("******************************************************");
 		
 		if (args.length != 2) {
-			System.out.println("No correct argument size");
+			System.out.println("MOMAR: No correct argument size");
 			System.exit(-1);
 		}
 		if (args[1].lastIndexOf("/") == -1) {
-			System.out.println("Not a UNIX path like string (\"/\" missing) : " + args[1]);
+			System.out.println("MOMAR: Not a UNIX path like string (\"/\" missing) : " + args[1]);
 			System.exit(-1);
 		}
 		Integer chmod = null;
@@ -104,13 +104,13 @@ public class Chmod {
 			chmod = Integer.parseInt(args[0]);
 		}
 		catch(NumberFormatException e) {
-			System.out.println("chmod is not an Integer number" + args[0]);
+			System.out.println("MOMAR: chmod is not an Integer number" + args[0]);
 			System.exit(-1);
 		}
 		//we should check if the number is a correct number for settings rights/permissions
 		
-		System.out.println("retval: " + Chmod.chmod(chmod,args[1]));
-		System.out.println("***END***");
+		System.out.println("MOMAR: retval: " + Chmod.chmod(chmod,args[1]));
+		System.out.println("MOMAR: ***END***");
 	}
 	
 	

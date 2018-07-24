@@ -56,7 +56,7 @@ public class FtpFetcher extends Thread {
 			try {
 				ArrayList<String> checklist = new ArrayList<String>();
 				// first get the collection we check against
-				System.out.println("FtpFetcher URL="+collection);
+				System.out.println("MOMAR: FtpFetcher URL="+collection);
 				ServiceInterface smithers = ServiceManager.getService("smithers");
 				if (smithers==null) return;
 				String response = smithers.get(collection+"/presentation",null,null);
@@ -72,9 +72,9 @@ public class FtpFetcher extends Thread {
 						}
 					}
 				} catch (Exception e) {
-					System.out.println("Problem in FtpFetcher : Can't parse collection");
+					System.out.println("MOMAR: Problem in FtpFetcher : Can't parse collection");
 				}
-				System.out.println("CHECKING AGAINST COLLECTION="+collection+" size="+checklist.size());
+				System.out.println("MOMAR: CHECKING AGAINST COLLECTION="+collection+" size="+checklist.size());
 				// now we have the checklist so lets do the ftp query
 				
 				// find out the connect info
@@ -99,20 +99,20 @@ public class FtpFetcher extends Thread {
 						password = account.substring(pos2+1);
 						account = account.substring(0,pos2);
 					} else {
-						System.out.println("Missing password in ftp url");
+						System.out.println("MOMAR: Missing password in ftp url");
 					}
 				}
 				
-				System.out.println("HOSTNAME2="+hostname);
-				System.out.println("FTPPATH="+ftppath);
-				System.out.println("ACCOUNT="+account);
-				System.out.println("PASSWORD="+password);	
+				System.out.println("MOMAR: HOSTNAME2="+hostname);
+				System.out.println("MOMAR: FTPPATH="+ftppath);
+				System.out.println("MOMAR: ACCOUNT="+account);
+				System.out.println("MOMAR: PASSWORD="+password);
 				
 				
 				FTPClient client = new FTPClient();
 				client.connect(hostname);
 				boolean loggedin = client.login(account,password);
-				if (!loggedin) { System.out.println("FtpServer: can not login : "+fetcher_source); return; }
+				if (!loggedin) { System.out.println("MOMAR: FtpServer: can not login : "+fetcher_source); return; }
 				client.enterLocalPassiveMode();
 				if (ftppath!=null) client.changeWorkingDirectory(ftppath);
 				// loop through remote folder
@@ -126,7 +126,7 @@ public class FtpFetcher extends Thread {
 							// do we need more ?
 							if (localFileCount(path)<maxfilesindropbox) {
 								if (file.getName().charAt(0)!='.') {
-									System.out.println("downloading="+file.getName()+" C="+localFileCount(path));
+									System.out.println("MOMAR: downloading="+file.getName()+" C="+localFileCount(path));
 									boolean success = FtpHelper.commonsGetFile(hostname, account, password, ftppath, path, file.getName(), file.getName()+".downloading");
 									if (success) {
 										File lfile = new File(path+File.separator+file.getName()+".downloading");
@@ -144,7 +144,7 @@ public class FtpFetcher extends Thread {
 			
 				sleep(5*1000);
 			} catch(Exception e) {
-				System.out.println("Problem in FtpFetcher");
+				System.out.println("MOMAR: Problem in FtpFetcher");
 				e.printStackTrace();
 				try {
 					sleep(5*1000);
@@ -162,7 +162,7 @@ public class FtpFetcher extends Thread {
 	}
 	
 	private void getFileByHttp(String path,String filename,OAIRecord record,String dropbox) {
-		System.out.println("SAVING : "+path+" TO DROPBOX :"+dropbox+" AS "+filename+".downloading");
+		System.out.println("MOMAR: SAVING : "+path+" TO DROPBOX :"+dropbox+" AS "+filename+".downloading");
 		OutputStream out = null;
 		URLConnection  con = null;
 
@@ -183,7 +183,7 @@ public class FtpFetcher extends Thread {
 				ByteWritten += ByteRead;
 				System.out.print(".");
 			}
-			System.out.println("download done "+filename);
+			System.out.println("MOMAR: download done "+filename);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -221,7 +221,7 @@ public class FtpFetcher extends Thread {
 			String md5 = ""+new BigInteger(1,m.digest()).toString(16);
 			return md5;
 		} catch(Exception e) {
-			System.out.println("Can't create md5");
+			System.out.println("MOMAR: Can't create md5");
 			return null;
 		}
 	}

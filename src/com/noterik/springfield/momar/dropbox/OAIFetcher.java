@@ -51,7 +51,7 @@ public class OAIFetcher extends Thread {
 			try {
 				ArrayList<String> checklist = new ArrayList<String>();
 				// first get the collection we check against
-				System.out.println("URL="+collection);
+				System.out.println("MOMAR: URL="+collection);
 				ServiceInterface smithers = ServiceManager.getService("smithers");
 				if (smithers==null) return;
 				String response = smithers.get(collection+"/presentation",null,null);
@@ -67,9 +67,9 @@ public class OAIFetcher extends Thread {
 						}
 					}
 				} catch (Exception e) {
-					System.out.println("Problem in OAIFetcher : Can't parse collection");
+					System.out.println("MOMAR: Problem in OAIFetcher : Can't parse collection");
 				}
-				System.out.println("CHECKING AGAINST COLLECTION="+collection+" size="+checklist.size());
+				System.out.println("MOMAR: CHECKING AGAINST COLLECTION="+collection+" size="+checklist.size());
 				// now we have the checklist so lets do the OAI query
 				
 				String oairesult = "";
@@ -139,7 +139,7 @@ public class OAIFetcher extends Thread {
 					                }
 									sleep(6*1000); // lets do one per min.
 								} else {
-									System.out.println("Already in collection : "+filepath);
+									System.out.println("MOMAR: Already in collection : "+filepath);
 								}
 							}
 						}
@@ -148,7 +148,7 @@ public class OAIFetcher extends Thread {
 				}
 				sleep(5*1000);
 			} catch(Exception e) {
-				System.out.println("Problem in OAIFetcher");
+				System.out.println("MOMAR: Problem in OAIFetcher");
 				e.printStackTrace();
 				try {
 					sleep(5*1000);
@@ -158,7 +158,7 @@ public class OAIFetcher extends Thread {
 	}
 	
 	private void getFileByHttp(String path,String filename,OAIRecord record,String dropbox) {
-		System.out.println("SAVING : "+path+" TO DROPBOX :"+dropbox+" AS "+filename+".downloading");
+		System.out.println("MOMAR: SAVING : "+path+" TO DROPBOX :"+dropbox+" AS "+filename+".downloading");
 		OutputStream out = null;
 		URLConnection  con = null;
 
@@ -179,7 +179,7 @@ public class OAIFetcher extends Thread {
 				ByteWritten += ByteRead;
 				System.out.print(".");
 			}
-			System.out.println("download done "+filename);
+			System.out.println("MOMAR: download done "+filename);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -217,7 +217,7 @@ public class OAIFetcher extends Thread {
 			String md5 = ""+new BigInteger(1,m.digest()).toString(16);
 			return md5;
 		} catch(Exception e) {
-			System.out.println("Can't create md5");
+			System.out.println("MOMAR: Can't create md5");
 			return null;
 		}
 	}
