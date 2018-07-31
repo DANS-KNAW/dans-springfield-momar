@@ -167,16 +167,16 @@ public class DropboxObserver implements MargeObserver {
 
 		// scan directory
 		File dir = new File(path);
-		System.out.println("SCAN="+dir);
+		System.out.println("MOMAR: SCAN="+dir);
 		String[] files = dir.list();
 		for (int i=0;i<files.length;i++) {
 			String filename = files[i];
 			String md5 = getMD5(filename);
 			if (filename.indexOf(".downloading")!=-1 || checklist.contains(md5)) {
-				System.out.println("OLD FILE="+filename+" MD5="+getMD5(filename));
+				System.out.println("MOMAR: OLD FILE="+filename+" MD5="+getMD5(filename));
 				// should we clean it up ?
 			} else {
-				System.out.println("NEW FILE="+filename+" MD5="+getMD5(filename));
+				System.out.println("MOMAR: NEW FILE="+filename+" MD5="+getMD5(filename));
 				performIngest(path,filename,md5);
 			}
 		}
@@ -308,7 +308,7 @@ public class DropboxObserver implements MargeObserver {
 		int pos = collection.indexOf("/collection/");
 		if (pos==-1) return false;
 		String userurl = collection.substring(0,pos);
-		System.out.println("PRE-URL="+userurl);
+		System.out.println("MOMAR: PRE-URL="+userurl);
 
 		// create the video/rawvideo part
 		String newbody = "<fsxml>";
@@ -373,13 +373,13 @@ public class DropboxObserver implements MargeObserver {
 	}
 	
 	private boolean checkSources(String path, String[] sources) {
-		System.out.println("SOURCES LENGTH="+sources.length);
+		System.out.println("MOMAR: SOURCES LENGTH="+sources.length);
 		if(sources.length<=0) return false;
 		
 		for(int i=0; i<sources.length; i++) {
 			String sourceFile = sources[i].trim();
 			File src = new File(path+File.separator+sourceFile);
-			System.out.println("SOURCE="+sourceFile);
+			System.out.println("MOMAR: SOURCE="+sourceFile);
 			if(!src.exists()) return false;
 		}		
 		return true;
@@ -427,9 +427,9 @@ public class DropboxObserver implements MargeObserver {
 	}
 
 	private boolean createAndMoveScreenshots(String userpart,String filepath,String filename, String videoid) {
-		System.out.println("MAKESCREENSHOTS="+imagemount);
+		System.out.println("MOMAR: MAKESCREENSHOTS="+imagemount);
 		MountProperties mp = LazyHomer.getMountProperties(imagemount);
-		System.out.println("MP="+mp.getProtocol()+" P="+mp.getPath());
+		System.out.println("MOMAR: MP="+mp.getProtocol()+" P="+mp.getPath());
 		MomarProperties myp = LazyHomer.getMyMomarProperties();
 		String tmpdir = myp.getTemporaryDirectory();
 		
@@ -449,13 +449,13 @@ public class DropboxObserver implements MargeObserver {
 	}
 
 	private boolean moveToMount(String userpart,String filepath,String filename, String videoid) {
-		System.out.println("MOUNT="+mount);
+		System.out.println("MOMAR: MOUNT="+mount);
 		MountProperties mp = LazyHomer.getMountProperties(mount);
-		System.out.println("MP="+mp.getProtocol()+" P="+mp.getPath());
+		System.out.println("MOMAR: MP="+mp.getProtocol()+" P="+mp.getPath());
 		
 		if (mp.getProtocol().equals("file")) {
 			String fullpath = mp.getPath()+userpart+File.separator+"video"+File.separator+videoid+File.separator+"rawvideo"+File.separator+"1";
-			System.out.println("FULLPATH="+fullpath);
+			System.out.println("MOMAR: FULLPATH="+fullpath);
             File dir = new File(fullpath);
             Boolean created = false;//dir.mkdirs();
             if (dir.exists()) {	
@@ -464,24 +464,24 @@ public class DropboxObserver implements MargeObserver {
             	created = dir.mkdirs();
             }
             if (created) {
-            	System.out.println("dir : "+fullpath+" created"); 
+            	System.out.println("MOMAR: dir : "+fullpath+" created");
             	int result = Chmod.chmod(777, dir.getPath());
-            	System.out.println("chmod dir = "+result);
+            	System.out.println("MOMAR: chmod dir = "+result);
                 File file = new File(filepath+File.separator+filename);
                 if (file.exists()) {
-                	System.out.println("file exists "+filepath+File.separator+filename);
+                	System.out.println("MOMAR: file exists "+filepath+File.separator+filename);
                 	//appears to have troubles with using a shared mount
                 	//from javadoc File.renameTo "The rename operation might not be able to move a file from one filesystem to another"
                 	boolean success = file.renameTo(new File(fullpath+File.separator+"raw.mp4"));
-                	System.out.println("moving file to "+fullpath+File.separator+"raw.mp4 result ="+success);
+                	System.out.println("MOMAR: moving file to "+fullpath+File.separator+"raw.mp4 result ="+success);
                 } else {
-                	System.out.println("file does not exists "+filepath+File.separator+filename);
+                	System.out.println("MOMAR: file does not exists "+filepath+File.separator+filename);
                 }
             } else {
-               	System.out.println("dir : "+fullpath+" failed");        	
+               	System.out.println("MOMAR: dir : "+fullpath+" failed");
             }
 		} else if (mp.getProtocol().equals("ftp")) {
-			System.out.println("GET FTP PROPERTIES");
+			System.out.println("MOMAR: GET FTP PROPERTIES");
 			mp = LazyHomer.getMountProperties(mount);
 			String server = mp.getHostname();
 			String username = mp.getAccount();
@@ -491,7 +491,7 @@ public class DropboxObserver implements MargeObserver {
 			String lFolder = filepath;
 
 			String rFilename = "raw.mp4";		
-			System.out.println("ftp sending to server: "+server+", username: "+username+", password: "+password+", rFolder: "+rFolder+", lFolder: "+lFolder+", filename: "+rFilename);
+			System.out.println("MOMAR: ftp sending to server: "+server+", username: "+username+", password: "+password+", rFolder: "+rFolder+", lFolder: "+lFolder+", filename: "+rFilename);
 			// send
 			boolean ok = FtpHelper.commonsSendFile(server, username, password, rFolder, lFolder, rFilename, filename, true);
 			return ok;
@@ -507,7 +507,7 @@ public class DropboxObserver implements MargeObserver {
 			String md5 = ""+new BigInteger(1,m.digest()).toString(16);
 			return md5;
 		} catch(Exception e) {
-			System.out.println("Can't create md5");
+			System.out.println("MOMAR: Can't create md5");
 			return null;
 		}
 	}

@@ -32,11 +32,11 @@ public class TFHelper {
 			 MountProperties minfo = LazyHomer.getMountProperties(name);
 		   
 			 if (minfo == null) {
-				 System.out.println("Mount properties not set for Momar for mount "+name);
+				 System.out.println("MOMAR: Mount properties not set for Momar for mount "+name);
 				 return false;
 			 }		   
 			 
-			 System.out.println("mount ip = "+minfo.getHostname()+" this momar ip "+LazyHomer.myip);		   
+			 System.out.println("MOMAR: mount ip = "+minfo.getHostname()+" this momar ip "+LazyHomer.myip);
 			 if (minfo.getHostname().equals(LazyHomer.myip)) {
 				 return true;
 			 }

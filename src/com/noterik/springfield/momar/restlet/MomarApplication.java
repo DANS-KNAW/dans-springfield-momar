@@ -19,7 +19,7 @@ public class MomarApplication extends Application {
 		try{
 			super.start();
 		}catch(Exception e){
-			System.out.println("Error starting application");
+			System.out.println("MOMAR: Error starting application");
 			e.printStackTrace();
 		}
 	} 
@@ -31,7 +31,7 @@ public class MomarApplication extends Application {
 		try {
 			super.stop();
 		} catch (Exception e) {
-			System.out.println("momar: error stopping application");
+			System.out.println("MOMAR: error stopping application");
 			e.printStackTrace();
 		}
 	}

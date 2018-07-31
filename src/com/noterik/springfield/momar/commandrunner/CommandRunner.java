@@ -1,10 +1,16 @@
 package com.noterik.springfield.momar.commandrunner;
 
+import org.apache.log4j.Logger;
+import org.restlet.engine.util.StringUtils;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 public class CommandRunner {
+	private static Logger LOG = Logger.getLogger(CommandRunner.class);
+
 	/**
 	 * Runs command.
 	 * 
@@ -12,7 +18,7 @@ public class CommandRunner {
 	 */
 	public static String run(String[] cmd) {
 		final StringBuffer result = new StringBuffer();
-		
+
 		try {
 			// Execute command
 			final Process child = Runtime.getRuntime().exec(cmd);
@@ -34,6 +40,7 @@ public class CommandRunner {
 							}
 						}
 					} catch (IOException e) {
+			    		LOG.error("IOException when reading STDOUT of command", e);
 						e.printStackTrace();
 					} finally {
 						try {
@@ -66,6 +73,7 @@ public class CommandRunner {
 						try {
 							bis.close();
 						} catch (IOException e) {
+							LOG.error("IOException when reading STDERR of command", e);
 							e.printStackTrace();
 						}
 					}
