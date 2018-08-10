@@ -99,7 +99,10 @@ public class TFactory {
 		// send PUT call
 		LOG.debug("uri: " + rawUri + "/properties/reencode" );
 		ServiceInterface smithers = ServiceManager.getService("smithers");
-		if (smithers==null) return;
+		if (smithers==null) {
+			LOG.warn("Cannot find smithers");
+			return;
+		}
 		smithers.put(rawUri + "/properties/reencode", "false", "text/xml");
 	}	
 	
