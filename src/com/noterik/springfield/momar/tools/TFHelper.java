@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.noterik.springfield.momar.homer.LazyHomer;
 import com.noterik.springfield.momar.homer.MountProperties;
 import com.noterik.springfield.momar.queue.Job;
+import org.apache.log4j.Logger;
 
 /**
  * Tools for running Transcoders.
@@ -19,6 +20,8 @@ import com.noterik.springfield.momar.queue.Job;
  *
  */
 public class TFHelper {
+	private static final Logger LOG = Logger.getLogger(TFHelper.class);
+
 	/**
 	 * Determines if the input file of this job is local or not.
 	 * 
@@ -32,11 +35,11 @@ public class TFHelper {
 			 MountProperties minfo = LazyHomer.getMountProperties(name);
 		   
 			 if (minfo == null) {
-				 System.out.println("MOMAR: Mount properties not set for Momar for mount "+name);
+				 LOG.debug("Mount properties not set for Momar for mount "+name);
 				 return false;
 			 }		   
 			 
-			 System.out.println("MOMAR: mount ip = "+minfo.getHostname()+" this momar ip "+LazyHomer.myip);
+			 LOG.debug("mount ip = "+minfo.getHostname()+" this momar ip "+LazyHomer.myip);
 			 if (minfo.getHostname().equals(LazyHomer.myip)) {
 				 return true;
 			 }

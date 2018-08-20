@@ -17,6 +17,7 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -33,6 +34,7 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPListParseEngine;
 
 public class FtpFetcher extends Thread {
+	private static final Logger LOG = Logger.getLogger(FtpFetcher.class);
 
 	private String path = null;
 	private String collection = null;
@@ -56,7 +58,7 @@ public class FtpFetcher extends Thread {
 			try {
 				ArrayList<String> checklist = new ArrayList<String>();
 				// first get the collection we check against
-				System.out.println("MOMAR: FtpFetcher URL="+collection);
+				LOG.debug("FtpFetcher URL="+collection);
 				ServiceInterface smithers = ServiceManager.getService("smithers");
 				if (smithers==null) return;
 				String response = smithers.get(collection+"/presentation",null,null);
@@ -72,9 +74,9 @@ public class FtpFetcher extends Thread {
 						}
 					}
 				} catch (Exception e) {
-					System.out.println("MOMAR: Problem in FtpFetcher : Can't parse collection");
+					LOG.debug("Problem in FtpFetcher : Can't parse collection");
 				}
-				System.out.println("MOMAR: CHECKING AGAINST COLLECTION="+collection+" size="+checklist.size());
+				LOG.debug("CHECKING AGAINST COLLECTION="+collection+" size="+checklist.size());
 				// now we have the checklist so lets do the ftp query
 				
 				// find out the connect info
@@ -99,20 +101,20 @@ public class FtpFetcher extends Thread {
 						password = account.substring(pos2+1);
 						account = account.substring(0,pos2);
 					} else {
-						System.out.println("MOMAR: Missing password in ftp url");
+						LOG.debug("Missing password in ftp url");
 					}
 				}
 				
-				System.out.println("MOMAR: HOSTNAME2="+hostname);
-				System.out.println("MOMAR: FTPPATH="+ftppath);
-				System.out.println("MOMAR: ACCOUNT="+account);
-				System.out.println("MOMAR: PASSWORD="+password);
+				LOG.debug("HOSTNAME2="+hostname);
+				LOG.debug("FTPPATH="+ftppath);
+				LOG.debug("ACCOUNT="+account);
+				LOG.debug("PASSWORD="+password);
 				
 				
 				FTPClient client = new FTPClient();
 				client.connect(hostname);
 				boolean loggedin = client.login(account,password);
-				if (!loggedin) { System.out.println("MOMAR: FtpServer: can not login : "+fetcher_source); return; }
+				if (!loggedin) { LOG.debug("FtpServer: can not login : "+fetcher_source); return; }
 				client.enterLocalPassiveMode();
 				if (ftppath!=null) client.changeWorkingDirectory(ftppath);
 				// loop through remote folder
@@ -126,7 +128,7 @@ public class FtpFetcher extends Thread {
 							// do we need more ?
 							if (localFileCount(path)<maxfilesindropbox) {
 								if (file.getName().charAt(0)!='.') {
-									System.out.println("MOMAR: downloading="+file.getName()+" C="+localFileCount(path));
+									LOG.debug("downloading="+file.getName()+" C="+localFileCount(path));
 									boolean success = FtpHelper.commonsGetFile(hostname, account, password, ftppath, path, file.getName(), file.getName()+".downloading");
 									if (success) {
 										File lfile = new File(path+File.separator+file.getName()+".downloading");
@@ -144,7 +146,7 @@ public class FtpFetcher extends Thread {
 			
 				sleep(5*1000);
 			} catch(Exception e) {
-				System.out.println("MOMAR: Problem in FtpFetcher");
+				LOG.debug("Problem in FtpFetcher");
 				e.printStackTrace();
 				try {
 					sleep(5*1000);
@@ -162,7 +164,7 @@ public class FtpFetcher extends Thread {
 	}
 	
 	private void getFileByHttp(String path,String filename,OAIRecord record,String dropbox) {
-		System.out.println("MOMAR: SAVING : "+path+" TO DROPBOX :"+dropbox+" AS "+filename+".downloading");
+		LOG.debug("SAVING : "+path+" TO DROPBOX :"+dropbox+" AS "+filename+".downloading");
 		OutputStream out = null;
 		URLConnection  con = null;
 
@@ -183,7 +185,7 @@ public class FtpFetcher extends Thread {
 				ByteWritten += ByteRead;
 				System.out.print(".");
 			}
-			System.out.println("MOMAR: download done "+filename);
+			LOG.debug("download done "+filename);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -221,7 +223,7 @@ public class FtpFetcher extends Thread {
 			String md5 = ""+new BigInteger(1,m.digest()).toString(16);
 			return md5;
 		} catch(Exception e) {
-			System.out.println("MOMAR: Can't create md5");
+			LOG.debug("Can't create md5");
 			return null;
 		}
 	}

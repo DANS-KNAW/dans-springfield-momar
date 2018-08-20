@@ -192,7 +192,7 @@ public class TFactory {
 				
 				File bFile = new File(batchFilesPath+File.separator+batchfile);
 				if (!bFile.exists()) {
-					System.out.println("Batch file not found "+batchFilesPath+File.separator+batchfile);
+					LOG.debug("Batch file not found "+batchFilesPath+File.separator+batchfile);
 					job.setError("Error", "Transcoding Failed MP4, batch file not found");
 					return false;
 				}
@@ -226,7 +226,7 @@ public class TFactory {
 	
 			   
 		    if (mp == null) {
-			System.out.println("Mount properties not set for Momar for mount "+stream);
+			LOG.debug("Mount properties not set for Momar for mount "+stream);
 			break;
 		    }		   
 		    

@@ -17,6 +17,7 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -28,6 +29,7 @@ import com.noterik.springfield.momar.homer.*;
 import com.sun.tools.internal.ws.wsdl.document.Documentation;
 
 public class OAIFetcher extends Thread {
+	private static final Logger LOG = Logger.getLogger(OAIFetcher.class);
 
 	private String path = null;
 	private String collection = null;
@@ -51,7 +53,7 @@ public class OAIFetcher extends Thread {
 			try {
 				ArrayList<String> checklist = new ArrayList<String>();
 				// first get the collection we check against
-				System.out.println("MOMAR: URL="+collection);
+				LOG.debug("URL="+collection);
 				ServiceInterface smithers = ServiceManager.getService("smithers");
 				if (smithers==null) return;
 				String response = smithers.get(collection+"/presentation",null,null);
@@ -61,15 +63,15 @@ public class OAIFetcher extends Thread {
 					for(Iterator<Element> iter = doc.getRootElement().elementIterator("presentation"); iter.hasNext(); ) {
 						Element e = iter.next();
 						Node p = e.selectSingleNode("properties/md5result");
-					//	System.out.println("NNNN="+p);
+					//	LOG.debug("NNNN="+p);
 						if (p!=null) {
 							checklist.add(p.getText());
 						}
 					}
 				} catch (Exception e) {
-					System.out.println("MOMAR: Problem in OAIFetcher : Can't parse collection");
+					LOG.debug("Problem in OAIFetcher : Can't parse collection");
 				}
-				System.out.println("MOMAR: CHECKING AGAINST COLLECTION="+collection+" size="+checklist.size());
+				LOG.debug("CHECKING AGAINST COLLECTION="+collection+" size="+checklist.size());
 				// now we have the checklist so lets do the OAI query
 				
 				String oairesult = "";
@@ -139,7 +141,7 @@ public class OAIFetcher extends Thread {
 					                }
 									sleep(6*1000); // lets do one per min.
 								} else {
-									System.out.println("MOMAR: Already in collection : "+filepath);
+									LOG.debug("Already in collection : "+filepath);
 								}
 							}
 						}
@@ -148,7 +150,7 @@ public class OAIFetcher extends Thread {
 				}
 				sleep(5*1000);
 			} catch(Exception e) {
-				System.out.println("MOMAR: Problem in OAIFetcher");
+				LOG.debug("Problem in OAIFetcher");
 				e.printStackTrace();
 				try {
 					sleep(5*1000);
@@ -158,7 +160,7 @@ public class OAIFetcher extends Thread {
 	}
 	
 	private void getFileByHttp(String path,String filename,OAIRecord record,String dropbox) {
-		System.out.println("MOMAR: SAVING : "+path+" TO DROPBOX :"+dropbox+" AS "+filename+".downloading");
+		LOG.debug("SAVING : "+path+" TO DROPBOX :"+dropbox+" AS "+filename+".downloading");
 		OutputStream out = null;
 		URLConnection  con = null;
 
@@ -179,7 +181,7 @@ public class OAIFetcher extends Thread {
 				ByteWritten += ByteRead;
 				System.out.print(".");
 			}
-			System.out.println("MOMAR: download done "+filename);
+			LOG.debug("download done "+filename);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -217,7 +219,7 @@ public class OAIFetcher extends Thread {
 			String md5 = ""+new BigInteger(1,m.digest()).toString(16);
 			return md5;
 		} catch(Exception e) {
-			System.out.println("MOMAR: Can't create md5");
+			LOG.debug("Can't create md5");
 			return null;
 		}
 	}
