@@ -8,20 +8,7 @@ import java.io.InputStreamReader;
 
 public class Chmod {
 
-	/**
-	 * Changes the rights of the file/dir to 774
-	 *
-	 * 0: 	no problems
-	 * >0:	chmod encountered problems to execute the command
-	 * -1:	methods default value (for instance returned when the Runtime.getRuntime().exc() failed
-	 */
-	public static final Integer chmodDefault(String path) {
-		if (path.lastIndexOf("/") == -1) {
-			throw new IllegalArgumentException("Not a UNIX path like string! + " + path);
-		}
-		return Chmod.chmod(774, path);
-		
-	}
+
 	/**
 	 * Changes the file/dir permissions/rights
 	 * 
@@ -84,35 +71,6 @@ public class Chmod {
 		return retVal;
 	}
 	
-	public static void main(String[] args) {
-		System.out.println("******************************************************");
-		System.out.println("Usage:: java Chmod path octa");
-		System.out.println("for example: java Chmod 764 /usr/home/rene/blabla.jpg ");
-		System.out.println("******************************************************");
-		
-		if (args.length != 2) {
-			System.out.println("MOMAR: No correct argument size");
-			System.exit(-1);
-		}
-		if (args[1].lastIndexOf("/") == -1) {
-			System.out.println("MOMAR: Not a UNIX path like string (\"/\" missing) : " + args[1]);
-			System.exit(-1);
-		}
-		Integer chmod = null;
-		
-		try { 
-			chmod = Integer.parseInt(args[0]);
-		}
-		catch(NumberFormatException e) {
-			System.out.println("MOMAR: chmod is not an Integer number" + args[0]);
-			System.exit(-1);
-		}
-		//we should check if the number is a correct number for settings rights/permissions
-		
-		System.out.println("MOMAR: retval: " + Chmod.chmod(chmod,args[1]));
-		System.out.println("MOMAR: ***END***");
-	}
-	
-	
+
 	
 }

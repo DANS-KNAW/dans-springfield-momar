@@ -64,9 +64,9 @@ public class LazyHomer implements MargeObserver {
 		rootPath = r;
 		ins = this;
 		retryCounter = 0;
-		initConfig();
 		initLogger();
-		
+		initConfig();
+
 		try{
 			InetAddress mip=InetAddress.getLocalHost();
 			myip = ""+mip.getHostAddress();
@@ -74,7 +74,6 @@ public class LazyHomer implements MargeObserver {
 			LOG.error("Exception ="+e.getMessage());
 		}
 		LOG.info("Momar init service name = momar on ipnumber = "+myip);
-		System.out.println("MOMAR: Momar init service name = momar on ipnumber = "+myip+" on marge port "+port);
 		marge = new LazyMarge();
 		
 		// lets watch for changes in the service nodes in smithers
@@ -86,12 +85,12 @@ public class LazyHomer implements MargeObserver {
 	public static void addSmithers(String ipnumber,String port,String mport,String role) {
 		int oldsize = smithers.size();
 		if (!(""+LazyHomer.getPort()).equals(mport)) {
-			System.out.println("MOMAR: EXTREME WARNING CLUSTER COLLISION ("+LazyHomer.getPort()+") "+ipnumber+":"+port+":"+mport);
+			LOG.warn("EXTREME WARNING CLUSTER COLLISION ("+LazyHomer.getPort()+") "+ipnumber+":"+port+":"+mport);
 			return;
 		}
 		
 		if (!role.equals(getRole())) {
-			System.out.println("MOMAR: Ignored this smithers ("+ipnumber+") its "+role+" and not "+getRole()+" like us");
+			LOG.debug("Ignored this smithers ("+ipnumber+") its "+role+" and not "+getRole()+" like us");
 			return;
 		}
 		
@@ -104,7 +103,6 @@ public class LazyHomer implements MargeObserver {
 			sp.setAlive(true); // since talking its alive 
 			noreply = false; // stop asking (minimum of 60 sec, delayed)
 			LOG.info("Momar found smithers at = "+ipnumber+" port="+port+" multicast="+mport);
-			System.out.println("MOMAR: Momar found smithers at = "+ipnumber+" port="+port+" multicast="+mport);
 		} else {
 			if (!sp.isAlive()) {
 				sp.setAlive(true); // since talking its alive again !
@@ -203,7 +201,7 @@ public class LazyHomer implements MargeObserver {
 						foundmynode = true;
 						retryCounter = 0;
 						if (name.equals("unknown")) {
-							System.out.println("MOMAR: This momar is not verified change its name, use smithers todo this for ip "+myip);
+							LOG.warn("This momar is not verified change its name, use smithers todo this for ip "+myip);
 						} else {
 							// so we have a name (verified) return true
 							iamok = true;
@@ -221,7 +219,7 @@ public class LazyHomer implements MargeObserver {
 					try{
 						  os = System.getProperty("os.name");
 					} catch (Exception e){
-						System.out.println("MOMAR: LazyHomer : "+e.getMessage());
+						LOG.warn("LazyHomer : "+e.getMessage()+ "; eating exception and continuing", e);
 					}
 					
 					String newbody = "<fsxml><properties>";
@@ -283,7 +281,7 @@ public class LazyHomer implements MargeObserver {
 	}
 	
 	private void initConfig() {
-		System.out.println("MOMAR: initializing configuration.");
+		LOG.debug("initializing configuration.");
 		
 		// properties
 		Properties props = new Properties();
@@ -296,13 +294,13 @@ public class LazyHomer implements MargeObserver {
 		
 		// load from file
 		try {
-			System.out.println("MOMAR: INFO: Loading config file from load : "+configfilename);
+			LOG.debug("INFO: Loading config file from load : "+configfilename);
 			File file = new File(configfilename);
 
 			if (file.exists()) {
 				props.loadFromXML(new BufferedInputStream(new FileInputStream(file)));
 			} else { 
-				System.out.println("MOMAR: FATAL: Could not load config "+configfilename);
+				LOG.fatal("FATAL: Could not load config "+configfilename);
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -316,7 +314,7 @@ public class LazyHomer implements MargeObserver {
 		smithers_port = Integer.parseInt(props.getProperty("default-smithers-port"));
 		role = props.getProperty("role");
 		if (role==null) role = "production";
-		System.out.println("SERVER ROLE="+role);
+		LOG.debug("SERVER ROLE="+role);
 	}
 	
 	public static String getRole() {
@@ -332,7 +330,7 @@ public class LazyHomer implements MargeObserver {
 			s.send(pack,(byte)ttl);
 			s.close();
 		} catch(Exception e) {
-			System.out.println("LazyHomer error "+e.getMessage());
+			LOG.warn("LazyHomer error "+e.getMessage()+"; eating exception and continuing", e);
 		}
 	}
 	

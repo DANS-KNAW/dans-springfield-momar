@@ -176,7 +176,7 @@ public class ScreenShotExtractor {
 			baserFolder = baserFolder.substring(0,pos);
 		}
 		
-		System.out.println("MOMAR: SCREENSHOT DIR: " + screenshotDir + " I: " + interval);
+		LOG.debug("SCREENSHOT DIR: " + screenshotDir + " I: " + interval);
 		
 		boolean success = true;
 		
@@ -189,7 +189,7 @@ public class ScreenShotExtractor {
 		try {
 			cadence = df.parse(interval).doubleValue();
 		} catch (ParseException e) {
-			System.out.println("MOMAR: ImageExtractor error "+e);
+			LOG.debug("ImageExtractor error "+e);
 			return false;
 		}
 		
@@ -205,7 +205,7 @@ public class ScreenShotExtractor {
 		
 		while (filesLeft) {
 			String lFilename = "image" + i + ".jpg";
-			System.out.println("MOMAR: FILE="+screenshotDir+lFilename);
+			LOG.debug("FILE="+screenshotDir+lFilename);
 			from = new File(screenshotDir+lFilename);
 			if (from.exists()) {
 				
@@ -220,10 +220,10 @@ public class ScreenShotExtractor {
 				String rFolder = baserFolder+rFilename.substring(0,pos);
 				rFilename = rFilename.substring(pos+1);
 
-				System.out.println("MOMAR: RFOLDER="+rFolder+" RFILE="+rFilename);
+				LOG.debug("RFOLDER="+rFolder+" RFILE="+rFilename);
 
 				// now ftp it to the mount
-				System.out.println("MOMAR: ftp sending to server: "+server+", username: "+username+", password: "+password+", rFolder: "+rFolder+", lFolder: "+lFolder+", filename: "+rFilename);
+				LOG.debug("ftp sending to server: "+server+", username: "+username+", password: "+password+", rFolder: "+rFolder+", lFolder: "+lFolder+", filename: "+rFilename);
 
 				boolean ok = FtpHelper.commonsSendFile(server, username, password, rFolder, lFolder, rFilename, lFilename, true);
 				if (!ok) return false;
@@ -231,7 +231,7 @@ public class ScreenShotExtractor {
 				try {
 					from.delete();
 				} catch(Exception e) {
-					System.out.println("MOMAR: Can't delete tmp image file");
+					LOG.debug("Can't delete tmp image file");
 				}
 				curTimeInSeconds += secInterval;
 				i++;
@@ -248,7 +248,7 @@ public class ScreenShotExtractor {
 			baserFolder = baserFolder.substring(0,pos);
 		}
 		
-		System.out.println("MOMAR: SCREENSHOT DIR: " + screenshotDir + " I: " + interval);
+		LOG.debug("SCREENSHOT DIR: " + screenshotDir + " I: " + interval);
 				
 		boolean success = true;		
 		boolean filesLeft = true;
@@ -259,7 +259,7 @@ public class ScreenShotExtractor {
 		try {
 			cadence = df.parse(interval).doubleValue();
 		} catch (ParseException e) {
-			System.out.println("MOMAR: ImageExtractor error "+e);
+			LOG.debug("ImageExtractor error "+e);
 			return false;
 		}
 		
@@ -273,7 +273,7 @@ public class ScreenShotExtractor {
 		
 		while (filesLeft) {
 			String lFilename = "image" + i + ".jpg";
-			System.out.println("MOMAR: FILE="+screenshotDir+lFilename);
+			LOG.debug("FILE="+screenshotDir+lFilename);
 			from = new File(screenshotDir+lFilename);
 			if (from.exists()) {
 				String rFilename = getOutputFileAccordingToSeconds(curTimeInSeconds);
@@ -282,7 +282,7 @@ public class ScreenShotExtractor {
 				String rFolder = baserFolder+rFilename.substring(0,pos);
 				rFilename = rFilename.substring(pos+1);
 				
-				System.out.println("MOMAR: RFOLDER="+rFolder+" RFILE="+rFilename);
+				LOG.debug("RFOLDER="+rFolder+" RFILE="+rFilename);
 				File rDir = new File(rFolder);
 				boolean rDirExists = false;
 				if (!rDir.exists()) {

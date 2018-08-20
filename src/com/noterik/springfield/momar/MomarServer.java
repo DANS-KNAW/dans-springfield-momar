@@ -161,7 +161,7 @@ public class MomarServer {
 	 * Loads configuration file.
 	 */
 	private void initConfigurationXML() {
-		System.out.println("Initializing configuration file.");
+		LOG.debug("Initializing configuration file.");
 		
 		// configuration file
 		configuration = new Properties();
@@ -176,7 +176,7 @@ public class MomarServer {
 			configuration.put("batchFilesPath", mp.getBatchFilesPath());
 			configuration.put("batchFilesExtension", mp.getBatchFilesExtension());
 		} else {
-			System.out.println("Loading from configuration failed.");
+			LOG.debug("Loading from configuration failed.");
 		}
 	}
 
@@ -256,7 +256,7 @@ public class MomarServer {
 		try {
 			numberOfWorkers = Integer.parseInt(configuration.getProperty("number-of-workers"));
 		} catch(Exception e) {
-			System.out.println("Could not load number of worker threads from configuration, switching to default (1).");
+			LOG.debug("Could not load number of worker threads from configuration, switching to default (1).");
 		}		
 		LOG.info("number of workers: " + numberOfWorkers);
 		

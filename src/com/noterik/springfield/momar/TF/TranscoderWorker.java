@@ -76,7 +76,7 @@ public class TranscoderWorker implements MargeObserver {
 				busy = false;
 				return success;
 			} else {
-				System.out.println("JOB TAKEN BY = "+cJob.getStatusProperty("trancoder"));
+				LOG.debug("JOB TAKEN BY = "+cJob.getStatusProperty("trancoder"));
 			}
 		} else {
 			LOG.debug("No job found");
